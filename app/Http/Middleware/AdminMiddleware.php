@@ -2,21 +2,19 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
-use App\Services\JwtService;
 use App\Models\User;
-use Illuminate\Support\Facades\Log;
+use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-class JwtMiddleware
+class AdminMiddleware
 {
-    private $jwt;
-
-    public function __construct(JwtService $jwt)
-    {
-        $this->jwt = $jwt;
-    }
-
-    public function handle($request, Closure $next)
+    /**
+     * Handle an incoming request.
+     *
+     * @param  Closure(Request): (Response)  $next
+     */
+    public function handle(Request $request, Closure $next): Response
     {
         $authHeader = $request->header('Authorization');
 
@@ -34,12 +32,9 @@ class JwtMiddleware
 
         $user = User::find($payload['sub']);
 
-        if (!$user) {
+        if (!$user || $user-> type != 'admin') {
             return response()->json(['message'=>'User not found'],401);
         }
 
-        $request->auth = $user;
-
-        return $next($request);
-    }
+        return $next($request);    }
 }
