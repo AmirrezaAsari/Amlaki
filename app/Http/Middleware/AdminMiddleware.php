@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\User;
+use App\Services\JwtService;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,6 +15,14 @@ class AdminMiddleware
      *
      * @param  Closure(Request): (Response)  $next
      */
+
+    private $jwt;
+
+    public function __construct(JwtService $jwt)
+    {
+        $this->jwt = $jwt;
+    }
+
     public function handle(Request $request, Closure $next): Response
     {
         $authHeader = $request->header('Authorization');

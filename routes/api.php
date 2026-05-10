@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\User\UserController;
 
 Route::get('/', function () {
     return response()->json(['message' => 'OK']);
@@ -18,7 +19,6 @@ Route::middleware('jwt.auth')->group(function () {
 
 
 Route::middleware('admin')->group(function () {
-    Route::get('/users', function () {
-       return response()->json('Will be developed');
-    });
+    Route::get('/users', [UserController::class, 'index']);
+    Route::put('/users/verify/{id}', [UserController::class, 'verify']);
 });
